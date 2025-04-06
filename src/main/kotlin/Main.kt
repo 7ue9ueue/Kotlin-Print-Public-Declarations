@@ -2,12 +2,11 @@
 Testing:
 
 ./gradlew build
-./gradlew run --args="/Users/tonywu/IdeaProjects/JavatoKotlin/src/main/kotlin/Sample.kt"
+./gradlew run --args="Sample.kt"
 
 ./gradlew clean shadowJar
 java -jar main.jar /Sample.kt
-
- */
+*/
 
 package com.example
 
@@ -16,14 +15,14 @@ import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.cli.jvm.compiler.KotlinCoreEnvironment
 import org.jetbrains.kotlin.cli.jvm.compiler.EnvironmentConfigFiles
 import org.jetbrains.kotlin.config.CompilerConfiguration
+import org.jetbrains.kotlin.lexer.KtTokens
+import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtFile
+import org.jetbrains.kotlin.psi.KtFunction
 import org.jetbrains.kotlin.psi.KtNamedDeclaration
 import org.jetbrains.kotlin.psi.KtPsiFactory
-import org.jetbrains.kotlin.psi.KtFunction
-import org.jetbrains.kotlin.psi.KtClass
-import org.jetbrains.kotlin.lexer.KtTokens
-import java.io.File
 import org.jetbrains.kotlin.com.intellij.openapi.util.Disposer
+import java.io.File
 
 fun createKotlinEnvironment(): KotlinCoreEnvironment {
     val configuration = CompilerConfiguration().apply {
@@ -43,7 +42,6 @@ fun parseKotlinFile(environment: KotlinCoreEnvironment, file: File): KtFile {
     return psiFactory.createFile(fileContent)
 }
 
-// This function returns a concise signature for a declaration.
 fun printSignature(declaration: KtNamedDeclaration): String {
     return when (declaration) {
         is KtFunction -> {
@@ -69,7 +67,7 @@ fun printSignature(declaration: KtNamedDeclaration): String {
             }
             builder.toString()
         }
-        else -> declaration.text // fallback for other declaration types
+        else -> declaration.text // Fallback for other declaration types.
     }
 }
 
@@ -86,12 +84,10 @@ fun printPublicDeclarations(ktFile: KtFile) {
 
 fun collectKotlinFiles(path: String): List<File> {
     val file = File(path)
-    return if (file.isDirectory) {
-        file.walkTopDown().filter { it.isFile && it.extension == "kt" }.toList()
-    } else if (file.isFile && file.extension == "kt") {
-        listOf(file)
-    } else {
-        emptyList()
+    return when {
+        file.isDirectory -> file.walkTopDown().filter { it.isFile && it.extension == "kt" }.toList()
+        file.isFile && file.extension == "kt" -> listOf(file)
+        else -> emptyList()
     }
 }
 
