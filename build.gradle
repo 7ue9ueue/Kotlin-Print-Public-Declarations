@@ -1,0 +1,33 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.9.22'
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+}
+
+group = 'com.example'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.jetbrains.kotlin:kotlin-compiler-embeddable:1.9.22'
+}
+
+application {
+    // For a top-level main() in Main.kt, the generated main class is "MainKt"
+    mainClassName = 'com.example.MainKt'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+    kotlinOptions {
+        jvmTarget = '21'
+    }
+}
